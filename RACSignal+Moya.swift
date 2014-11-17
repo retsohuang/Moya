@@ -9,7 +9,7 @@
 import Foundation
 import ReactiveCocoa
 
-let MoyaErrorDomain = "Moya"
+public let MoyaErrorDomain = "Moya"
 
 public enum MoyaErrorCode: Int {
     case ImageMapping = 0
