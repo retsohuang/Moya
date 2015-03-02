@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Alamofire
 
 /// Block to be executed when a request has completed.
 public typealias MoyaCompletion = (data: NSData?, statusCode: Int?, response:NSURLResponse?, error: NSError?) -> ()
@@ -16,10 +15,10 @@ public typealias MoyaCompletion = (data: NSData?, statusCode: Int?, response:NSU
 public class Moya {
     
     /// Represents an HTTP method.
-    public enum Method {
+    public enum MoyaMethod {
         case GET, POST, PUT, DELETE, OPTIONS, HEAD, PATCH, TRACE, CONNECT
 
-        func method() -> Alamofire.Method {
+        func method() -> Method {
             switch self {
             case .GET:
                 return .GET
@@ -44,13 +43,13 @@ public class Moya {
     }
 
     /// Choice of parameter encoding.
-    public enum ParameterEncoding {
+    public enum MoyaParameterEncoding {
         case URL
         case JSON
         case PropertyList(NSPropertyListFormat, NSPropertyListWriteOptions)
         case Custom((URLRequestConvertible, [String: AnyObject]?) -> (NSURLRequest, NSError?))
         
-        func parameterEncoding() -> Alamofire.ParameterEncoding {
+        func parameterEncoding() -> ParameterEncoding {
             switch self {
             case .URL:
                 return .URL
@@ -70,8 +69,8 @@ public class Moya {
     }
     
     /// Default HTTP method is GET.
-    public class func DefaultMethod() -> Method {
-        return Method.GET
+    public class func DefaultMethod() -> MoyaMethod {
+        return MoyaMethod.GET
     }
     
     /// Default parameters are empty.
@@ -94,7 +93,7 @@ public protocol MoyaTarget : MoyaPath {
 /// Request provider class. Requests should be made through this class only.
 public class MoyaProvider<T: MoyaTarget> {
     /// Closure that defines the endpoints for the provider.
-    public typealias MoyaEndpointsClosure = (T, method: Moya.Method, parameters: [String: AnyObject]) -> (Endpoint<T>)
+    public typealias MoyaEndpointsClosure = (T, method: Moya.MoyaMethod, parameters: [String: AnyObject]) -> (Endpoint<T>)
     /// Closure that resolves an Endpoint into an NSURLRequest.
     public typealias MoyaEndpointResolution = (endpoint: Endpoint<T>) -> (NSURLRequest)
     public typealias MoyaStubbedBehavior = ((T) -> (Moya.StubbedBehavior))
@@ -113,12 +112,12 @@ public class MoyaProvider<T: MoyaTarget> {
     }
     
     /// Returns an Endpoint based on the token, method, and parameters by invoking the endpointsClosure.
-    public func endpoint(token: T, method: Moya.Method, parameters: [String: AnyObject]) -> Endpoint<T> {
+    public func endpoint(token: T, method: Moya.MoyaMethod, parameters: [String: AnyObject]) -> Endpoint<T> {
         return endpointsClosure(token, method: method, parameters: parameters)
     }
     
     /// Designated request-making method.
-    public func request(token: T, method: Moya.Method, parameters: [String: AnyObject], completion: MoyaCompletion) {
+    public func request(token: T, method: Moya.MoyaMethod, parameters: [String: AnyObject], completion: MoyaCompletion) {
         let endpoint = self.endpoint(token, method: method, parameters: parameters)
         let request = endpointResolver(endpoint: endpoint)
         
@@ -146,7 +145,7 @@ public class MoyaProvider<T: MoyaTarget> {
             }
 
         } else {
-             Alamofire.Manager.sharedInstance.request(request)
+             Manager.sharedInstance.request(request)
                 .response({(request: NSURLRequest, response: NSHTTPURLResponse?, data: AnyObject?, error: NSError?) -> () in
                     // Alamofire always sense the data param as an NSData? type, but we'll
                     // add a check just in case something changes in the future.
@@ -164,7 +163,7 @@ public class MoyaProvider<T: MoyaTarget> {
         request(token, method: Moya.DefaultMethod(), parameters: parameters, completion)
     }
 
-    public func request(token: T, method: Moya.Method, completion: MoyaCompletion) {
+    public func request(token: T, method: Moya.MoyaMethod, completion: MoyaCompletion) {
         request(token, method: method, parameters: Moya.DefaultParameters(), completion)
     }
     

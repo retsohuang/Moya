@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Alamofire
 
 /// Used for stubbing responses.
 public enum EndpointSampleResponse {
@@ -18,14 +17,14 @@ public enum EndpointSampleResponse {
 /// Class for reifying a target of the T enum unto a concrete Endpoint
 public class Endpoint<T> {
     public let URL: String
-    public let method: Moya.Method
+    public let method: Moya.MoyaMethod
     public let sampleResponse: EndpointSampleResponse
     public let parameters: [String: AnyObject]
-    public let parameterEncoding: Moya.ParameterEncoding
+    public let parameterEncoding: Moya.MoyaParameterEncoding
     public let httpHeaderFields: [String: AnyObject]
     
     /// Main initializer for Endpoint.
-    public init(URL: String, sampleResponse: EndpointSampleResponse, method: Moya.Method = Moya.Method.GET, parameters: [String: AnyObject] = [String: AnyObject](), parameterEncoding: Moya.ParameterEncoding = .URL, httpHeaderFields: [String: AnyObject] = [String: AnyObject]()) {
+    public init(URL: String, sampleResponse: EndpointSampleResponse, method: Moya.MoyaMethod = Moya.MoyaMethod.GET, parameters: [String: AnyObject] = [String: AnyObject](), parameterEncoding: Moya.MoyaParameterEncoding = .URL, httpHeaderFields: [String: AnyObject] = [String: AnyObject]()) {
         self.URL = URL
         self.sampleResponse = sampleResponse
         self.method = method
