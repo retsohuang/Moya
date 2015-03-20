@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ReactiveCocoa
 
 public class MoyaResponse: NSObject {
     public let statusCode: Int
@@ -43,7 +42,7 @@ public class ReactiveMoyaProvider<T where T: MoyaTarget>: MoyaProvider<T> {
     }
     
     /// Designated request-making method.
-    public func request(token: T, method: Moya.Method, parameters: [String: AnyObject]) -> RACSignal {
+    public func request(token: T, method: Moya.MoyaMethod, parameters: [String: AnyObject]) -> RACSignal {
         let endpoint = self.endpoint(token, method: method, parameters: parameters)
         
         // weak self just for best practices – RACSignal will take care of any retain cycles anyway,
@@ -94,7 +93,7 @@ public class ReactiveMoyaProvider<T where T: MoyaTarget>: MoyaProvider<T> {
         return request(token, method: Moya.DefaultMethod(), parameters: parameters)
     }
     
-    public func request(token: T, method: Moya.Method) -> RACSignal {
+    public func request(token: T, method: Moya.MoyaMethod) -> RACSignal {
         return request(token, method: method, parameters: Moya.DefaultParameters())
     }
     

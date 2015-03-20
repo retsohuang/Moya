@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import ReactiveCocoa
 
 public let MoyaErrorDomain = "Moya"
 
